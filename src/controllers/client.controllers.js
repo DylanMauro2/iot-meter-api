@@ -19,37 +19,42 @@ export const registrarCliente = async (req, res) => {
 }
 
 export const loginCliente = async (req, res) => {
-  const {nombreUsuario, contraseña} = req.body
-  const cliente = await Cliente.findOne({
-    nombreUsuario: {
-      "$eq": nombreUsuario
-    },
-    contraseña: {
-      "$eq": contraseña
-    }
-  })
-
-  if (!cliente) return res.status(400).json({ error: "Credenciales invalidas"})
-  if (cliente.contraseña !== contraseña) return res.status(400).json({ error: "Credenciales invalidas"})
+  try {
+    const {nombreUsuario, contraseña} = req.body
+    const cliente = await Cliente.findOne({
+      nombreUsuario: {
+        "$eq": nombreUsuario
+      },
+      contraseña: {
+        "$eq": contraseña
+      }
+    })
   
-  const token = await crearToken({id:cliente._id})
-  console.log(token)
-  res.cookie("token", token)
-  res.status(201).json({
-    err: "acceso permitido"
-  })
+    if (!cliente) return res.status(400).json({ error: "Credenciales invalidas"})
+    if (cliente.contraseña !== contraseña) return res.status(400).json({ error: "Credenciales invalidas"})   
+    const token = await crearToken({
+      id:cliente._id,
+      nombre: cliente.nombreUsuario
+    })
+    res.cookie("token", token)
+    return res.status(201).json({
+      token
+    })
+  } catch (error) {
+    console.log(error)
+  }
      
 }
 
 export const perfilCliente = async (req, res) => {
-  const id = req.user.id
+  const {id} = req.user
   const clienteEncontrado = await Cliente.findById(id)
-  console.log(clienteEncontrado)
+  res.json(clienteEncontrado)
 }
 
 export function crearToken(payload) {
   return new Promise((resolve, reject) => {
-    jwt.sign(payload, TOKEN_SECRET_KEY, (err, token) => {
+    jwt.sign(payload, TOKEN_SECRET_KEY, {expiresIn:"1d"}, (err, token) => {
       if (err) reject(err)
       resolve(token)
     })
