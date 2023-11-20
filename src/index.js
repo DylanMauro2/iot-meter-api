@@ -64,9 +64,9 @@ io.on('connection', socket => {
 
 function generarData() {
   setInterval(async () => {
-    const watts = 250  + Math.random(10) * 100;
-    const voltaje = 150  + Math.random(10) * 50;
-    const amperaje = 10  + Math.random(10) * 5;
+    const watts = 25  + Math.random(10) * 10;
+    const voltaje = 15  + Math.random(10) * 5;
+    const amperaje = 1  + Math.random(10) * 0.5;
     const newData = new Data({
       voltaje,
       amperaje,
@@ -74,7 +74,7 @@ function generarData() {
       userId: testUserId
     })
     await newData.save()
-  }, 3000)
+  }, 5000)
 }
 
 generarData()
