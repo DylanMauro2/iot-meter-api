@@ -1,10 +1,12 @@
-import { connect } from "mongoose";
+import pkg from "pg"
 
-export const connectDB = async () => {
-  try {
-    await connect("mongodb://127.0.0.1:27017");
-    console.log("Connected to db");
-  } catch (error) {
-    console.error(error);
-  }
-};
+const {Pool} = pkg
+
+export const pool = new Pool({
+  user: "postgres",
+  host: "localhost",
+  password: "password",
+  database:"iot-meter",
+  port:"5432",
+})
+
