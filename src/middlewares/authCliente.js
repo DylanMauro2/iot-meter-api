@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import { TOKEN_SECRET_KEY } from "../config.js"
 
-export const authCliente = (req, res, next) => {
+export const verifySession = (req, res, next) => {
   const {token} = req.cookies
   if (!token) {
     return res.status(400).json({ err: "No token"})

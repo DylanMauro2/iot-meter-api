@@ -9,7 +9,6 @@ const app = express()
 app.use(cors({ credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({ extended:true }))
 
 
 app.use(usuarioRoutes)
@@ -18,8 +17,8 @@ app.get("/", (req, res) => {
   res.send("hola mundo")
 })
 
-app.listen(8080, () => {
-  console.log("server listen on port 8080")
+app.listen(3000, () => {
+  console.log("server listen on port 3000")
 })
 
 
