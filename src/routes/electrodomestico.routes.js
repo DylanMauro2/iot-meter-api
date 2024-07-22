@@ -1,10 +1,20 @@
-import { response, Router } from "express";
-import { pool } from "../db";
+import { Router } from "express";
+import { pool } from "../db.js";
 
 const electrodomesticoRoutes = Router()
 
 electrodomesticoRoutes.get("/electrodomesticos", async (req, res) => {
-    res.send("obteniendo electrodomesticos")
+    try {
+        const query = "SELECT * FROM electrodomestico"
+        const response = await pool.query(query)
+
+        console.log(response)
+
+        res.status(200).json(response)
+
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 electrodomesticoRoutes.post("/electrodomesticos/crear", async (req, res) => {
@@ -12,7 +22,6 @@ electrodomesticoRoutes.post("/electrodomesticos/crear", async (req, res) => {
         const { 
             nombre, 
             usuarioId, 
-            voltajeNominal, 
             amperajeNominal, 
             potenciaNominal,
         } = req.body
@@ -23,7 +32,7 @@ electrodomesticoRoutes.post("/electrodomesticos/crear", async (req, res) => {
             })
         }
 
-        const query = `INSERT INTO electrodomestico (nombre, usuario_id, voltaje_nominal, amperaje_nominal, potencia_nominal) VALUES ('${nombre}','${usuarioId}','${voltajeNominal}','${amperajeNominal}','${potenciaNominal}')`
+        const query = `INSERT INTO electrodomestico (nombre, usuario_id, amperaje_nominal, potencia_nominal, voltaje_nominal) VALUES ('${nombre}','${usuarioId}','${amperajeNominal}','${potenciaNominal}',${220})`
     
         const response = await pool.query(query)
         
@@ -46,3 +55,5 @@ electrodomesticoRoutes.post("/electrodomesticos/usuario", async (req, res) => {
         console.error(e)
     }
 })
+
+export default electrodomesticoRoutes;

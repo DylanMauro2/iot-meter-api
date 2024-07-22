@@ -25,15 +25,15 @@ CREATE TABLE electrodomestico (
     umbral_potencia_min DECIMAL(5, 2),
     umbral_potencia_max DECIMAL(5, 2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE medicion (
     medicion_id SERIAL PRIMARY KEY,
     electrodomestico_id INT REFERENCES electrodomestico(electrodomestico_id),
-    voltaje DECIMAL(5, 2) NOT NULL, /* Voltaje */
-    corriente DECIMAL(5, 2) NOT NULL, /* Amperes */
-    potencia DECIMAL(5, 2) NOT NULL, /* Watts */
+    voltaje INT NOT NULL, 
+    corriente DECIMAL(5, 2) NOT NULL, 
+    potencia DECIMAL(5, 2) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
