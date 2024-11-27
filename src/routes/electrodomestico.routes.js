@@ -22,10 +22,36 @@ electrodomesticoRoutes.get("/electrodomesticos/:id", async (req, res) => {
         const { id } = req.params
         const query = `SELECT * FROM electrodomestico WHERE electrodomestico_id = ${id}`
         const response = await pool.query(query)
+        const {rows } = response
 
         console.log("obteniendo dispositivo")
 
-        res.status(200).json(response.rows[0])
+        console.log(response.rows)
+
+        if (rows.length > 0) {
+            const electrodomestico = rows[0];
+            const mappedData = {
+                id: electrodomestico.electrodomestico_id,
+                usuarioId: electrodomestico.usuario_id,
+                nombre: electrodomestico.nombre,
+                descripcion: electrodomestico.descripcion,
+                marca: electrodomestico.marca,
+                modelo: electrodomestico.modelo,
+                amperajeNominal: electrodomestico.amperaje_nominal,
+                voltajeNominal: electrodomestico.voltaje_nominal,
+                potenciaNominal: electrodomestico.potencia_nominal,
+                umbralAmperajeMin: electrodomestico.umbral_amperaje_min,
+                umbralAmperajeMax: electrodomestico.umbral_amperaje_max,
+                umbralVoltajeMin: electrodomestico.umbral_voltaje_min,
+                umbralVoltajeMax: electrodomestico.umbral_voltaje_max,
+                umbralPotenciaMin: electrodomestico.umbral_potencia_min,
+                umbralPotenciaMax: electrodomestico.umbral_potencia_max,
+                createdAt: electrodomestico.created_at,
+                updatedAt: electrodomestico.updated_at
+            }
+            res.status(200).json(mappedData)
+        }
+
 
     } catch (error) {
         console.log(error)
@@ -67,19 +93,26 @@ electrodomesticoRoutes.put("/electrodomesticos/:id/editar", async (req, res) => 
             usuarioId, 
             amperajeNominal, 
             potenciaNominal,
+            umbralAmperajeMax,
+            umbralAmperajeMin,
+            umbralPotenciaMax,
+            umbralPotenciaMin,
+            descripcion
         } = req.body
+
+        console.log(req.body)
         
         const { id } = req.params
     
-        if (!usuarioId) {
+        if (!id) {
             return res.status(400).json({
-                error: "No se entrego un id de usuario"
+                error: "No se entrego un id de electrodomestico"
             })
         }
 
         const fields = [];
 
-        let query = 'UPDATE usuario SET ';
+        let query = 'UPDATE electrodomestico SET ';
   
         if (nombre) {
             fields.push(`nombre = '${nombre}'`);
@@ -91,6 +124,26 @@ electrodomesticoRoutes.put("/electrodomesticos/:id/editar", async (req, res) => 
 
         if (potenciaNominal) {
             fields.push(`potencia_nominal = '${potenciaNominal}'`);
+        }
+
+        if (umbralAmperajeMax) {
+            fields.push(`umbral_amperaje_max = '${umbralAmperajeMax}'`);
+        }
+
+        if (umbralAmperajeMin) {
+            fields.push(`umbral_amperaje_min = '${umbralAmperajeMin}'`);
+        }
+
+        if (umbralPotenciaMax) {
+            fields.push(`umbral_potencia_max = '${umbralPotenciaMax}'`);
+        }
+
+        if (umbralPotenciaMin) {
+            fields.push(`umbral_potencia_min = '${umbralPotenciaMin}'`);
+        }
+
+        if (descripcion) {
+            fields.push(`descripcion = '${descripcion}'`);
         }
   
         if (fields.length === 0) {

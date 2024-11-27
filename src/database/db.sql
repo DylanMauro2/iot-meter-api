@@ -15,7 +15,7 @@ CREATE TABLE electrodomestico (
     descripcion TEXT,
     marca VARCHAR(255),
     modelo VARCHAR(255),
-    voltaje_nominal DECIMAL(5, 2) NOT NULL,
+    voltaje_nominal DECIMAL(5, 2) NOT NULL DEFAULT 220,
     amperaje_nominal DECIMAL(5, 2) NOT NULL,
     potencia_nominal DECIMAL(5, 2) NOT NULL,
     umbral_voltaje_min DECIMAL(5, 2),
@@ -28,13 +28,54 @@ CREATE TABLE electrodomestico (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE medicion_estado (
+    medicion_estado_id SERIAL PRIMARY KEY,
+    medicion_estado_nombre TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO medicion_estado (medicion_estado_nombre) VALUES 
+    ('Consumo Alto'),
+    ('Consumo Normal'),
+    ('Consumo Bajo');
+
 CREATE TABLE medicion (
     medicion_id SERIAL PRIMARY KEY,
     electrodomestico_id INT REFERENCES electrodomestico(electrodomestico_id),
-    voltaje INT NOT NULL, 
-    corriente DECIMAL(5, 2) NOT NULL, 
+    medicion_estado_id INT REFERENCES medicion_estado(medicion_estado_id),
+    voltaje DECIMAL(5, 2) NOT NULL DEFAULT 220, 
+    amperaje DECIMAL(5, 2) NOT NULL, 
     potencia DECIMAL(5, 2) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE tipo_anomalia (
+    tipo_anomalia_id SERIAL PRIMARY KEY,
+    tipo_anomalia_nombre TEXT NOT NULL, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO tipo_anomalia (tipo_anomalia_nombre) VALUES 
+    ('Amperaje Bajo'),
+    ('Amperaje Alto'),
+    ('Potencia Baja'),
+    ('Potencia Alta');
+
+CREATE TABLE medicion_anomalia (
+    medicion_anomalia_id SERIAL PRIMARY KEY,
+    medicion_anomalia_valor INTEGER NOT NULL,
+    umbral_excedido INTEGER NOT NULL,
+    medicion_id INT REFERENCES electrodomestico(electrodomestico_id),
+    tipo_anomalia_id INT REFERENCES tipo_anomalia(tipo_anomalia_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE electrodomestico ALTER COLUMN umbral_voltaje_min SET DEFAULT 198;
+ALTER TABLE electrodomestico ALTER COLUMN umbral_voltaje_max SET DEFAULT 244;
+
+UPDATE electrodomestico SET umbral_voltaje_min = 198;
+UPDATE electrodomestico SET umbral_voltaje_max = 244;
+
 
 

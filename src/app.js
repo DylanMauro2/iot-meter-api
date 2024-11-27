@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import usuarioRoutes from "./routes/usuario.routes.js"
 import medicionRoutes from "./routes/medicion.routes.js"
 import electrodomesticoRoutes from "./routes/electrodomestico.routes.js"
+import morgan from "morgan"
 
 
 const app = express()
@@ -12,6 +13,7 @@ const app = express()
 app.use(cors({ credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
+app.use(morgan("dev"))
 
 
 app.use(usuarioRoutes)
