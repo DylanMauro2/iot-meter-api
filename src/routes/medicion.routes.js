@@ -62,7 +62,6 @@ medicionRoutes.post("/mediciones/crear", async (req, res) => {
                 }
             } else {
                 // se envia a crear una anomalia asociada a la medicion con su tipo de anomalía
-                const 
                 return
             }
         }
